@@ -20,14 +20,14 @@ export default async function AdminOverviewPage() {
     { data: completedSteps },
     { count: newProspects },
   ] = await Promise.all([
-    supabase.from("site_visits").select("*", { count: "exact", head: true }),
-    supabase.from("products").select("*", { count: "exact", head: true }).eq("active", true),
-    supabase.from("orders").select("*", { count: "exact", head: true }),
-    supabase.from("orders").select("*").order("created_at", { ascending: false }).limit(6),
-    supabase.from("site_visits").select("visited_at").gte("visited_at", sevenDaysAgo.toISOString()),
-    supabase.from("profiles").select("*", { count: "exact", head: true }).eq("role", "member"),
-    supabase.from("member_progress").select("member_id").eq("completed", true),
-    supabase.from("prospects").select("*", { count: "exact", head: true }).eq("status", "Nouveau"),
+    supabase.from("bsv_site_visits").select("*", { count: "exact", head: true }),
+    supabase.from("bsv_products").select("*", { count: "exact", head: true }).eq("active", true),
+    supabase.from("bsv_orders").select("*", { count: "exact", head: true }),
+    supabase.from("bsv_orders").select("*").order("created_at", { ascending: false }).limit(6),
+    supabase.from("bsv_site_visits").select("visited_at").gte("visited_at", sevenDaysAgo.toISOString()),
+    supabase.from("bsv_profiles").select("*", { count: "exact", head: true }).eq("role", "member"),
+    supabase.from("bsv_member_progress").select("member_id").eq("completed", true),
+    supabase.from("bsv_prospects").select("*", { count: "exact", head: true }).eq("status", "Nouveau"),
   ]);
 
   const days = {};

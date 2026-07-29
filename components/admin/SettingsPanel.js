@@ -13,7 +13,7 @@ export default function SettingsPanel({ initialSettings }) {
   async function save(next) {
     setForm(next);
     await supabase
-      .from("site_settings")
+      .from("bsv_site_settings")
       .update({ site_title: next.site_title, cover_image_url: next.cover_image_url, accent_color: next.accent_color })
       .eq("id", 1);
     setSavedFlash(true);

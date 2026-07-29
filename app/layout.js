@@ -22,7 +22,7 @@ export const viewport = {
 
 async function getSiteSettings() {
   const supabase = createClient();
-  const { data } = await supabase.from("site_settings").select("*").eq("id", 1).single();
+  const { data } = await supabase.from("bsv_site_settings").select("*").eq("id", 1).single();
   return data;
 }
 

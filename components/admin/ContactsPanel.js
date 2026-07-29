@@ -11,7 +11,7 @@ export default function ContactsPanel({ initialSettings }) {
 
   async function save() {
     await supabase
-      .from("site_settings")
+      .from("bsv_site_settings")
       .update({
         whatsapp_number: form.whatsapp_number,
         phone_number: form.phone_number,

@@ -18,7 +18,7 @@ export default function CRMClient({ memberId, initialProspects }) {
   async function addProspect() {
     if (!form.name.trim() || !form.phone.trim()) return;
     const { data, error } = await supabase
-      .from("prospects")
+      .from("bsv_prospects")
       .insert({ member_id: memberId, name: form.name, phone: form.phone, status: "Nouveau", note: form.note })
       .select()
       .single();
@@ -29,12 +29,12 @@ export default function CRMClient({ memberId, initialProspects }) {
 
   async function updateStatus(id, status) {
     setProspects(prospects.map((p) => (p.id === id ? { ...p, status } : p)));
-    await supabase.from("prospects").update({ status }).eq("id", id);
+    await supabase.from("bsv_prospects").update({ status }).eq("id", id);
   }
 
   async function remove(id) {
     setProspects(prospects.filter((p) => p.id !== id));
-    await supabase.from("prospects").delete().eq("id", id);
+    await supabase.from("bsv_prospects").delete().eq("id", id);
   }
 
   return (

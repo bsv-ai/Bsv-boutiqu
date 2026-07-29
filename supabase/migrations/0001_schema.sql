@@ -1,9 +1,12 @@
 -- Bâtir Sa Valeur — schéma complet (Boutique + Espace ADN)
+-- Toutes les tables sont préfixées "bsv_" pour ne jamais entrer en conflit avec
+-- d'autres projets qui partagent ce même projet Supabase (ex. Ardoise, qui a sa
+-- propre table "profiles"). Rien ici ne touche aux tables d'un autre projet.
 -- À exécuter une seule fois dans l'éditeur SQL de votre projet Supabase.
 
 -- ===================== BOUTIQUE =====================
 
-create table if not exists public.products (
+create table if not exists public.bsv_products (
   id uuid primary key default gen_random_uuid(),
   active boolean not null default true,
   price integer not null default 0,
@@ -17,7 +20,7 @@ create table if not exists public.products (
   created_at timestamptz not null default now()
 );
 
-create table if not exists public.orders (
+create table if not exists public.bsv_orders (
   id uuid primary key default gen_random_uuid(),
   order_number text not null unique,
   items jsonb not null default '[]',
@@ -30,7 +33,7 @@ create table if not exists public.orders (
   created_at timestamptz not null default now()
 );
 
-create table if not exists public.site_settings (
+create table if not exists public.bsv_site_settings (
   id int primary key default 1,
   site_title text not null default 'Bâtir Sa Valeur',
   whatsapp_number text not null default '',
@@ -40,18 +43,20 @@ create table if not exists public.site_settings (
   tiktok_link text not null default '',
   cover_image_url text not null default '',
   accent_color text not null default '#C89B3C',
-  constraint single_row check (id = 1)
+  constraint bsv_settings_single_row check (id = 1)
 );
-insert into public.site_settings (id) values (1) on conflict (id) do nothing;
+insert into public.bsv_site_settings (id) values (1) on conflict (id) do nothing;
 
-create table if not exists public.site_visits (
+create table if not exists public.bsv_site_visits (
   id bigint generated always as identity primary key,
   visited_at timestamptz not null default now()
 );
 
 -- ===================== ESPACE ADN =====================
 
-create table if not exists public.profiles (
+-- Table de profils propre à Bâtir Sa Valeur (distincte de toute table
+-- "profiles" déjà présente sur ce projet Supabase pour un autre outil).
+create table if not exists public.bsv_profiles (
   id uuid primary key references auth.users (id) on delete cascade,
   full_name text,
   phone text,
@@ -59,17 +64,17 @@ create table if not exists public.profiles (
   created_at timestamptz not null default now()
 );
 
-create table if not exists public.member_progress (
-  member_id uuid not null references public.profiles (id) on delete cascade,
+create table if not exists public.bsv_member_progress (
+  member_id uuid not null references public.bsv_profiles (id) on delete cascade,
   step_id int not null check (step_id between 1 and 6),
   completed boolean not null default false,
   completed_at timestamptz,
   primary key (member_id, step_id)
 );
 
-create table if not exists public.prospects (
+create table if not exists public.bsv_prospects (
   id uuid primary key default gen_random_uuid(),
-  member_id uuid not null references public.profiles (id) on delete cascade,
+  member_id uuid not null references public.bsv_profiles (id) on delete cascade,
   name text not null,
   phone text not null,
   status text not null default 'Nouveau' check (status in ('Nouveau', 'Contacté', 'Intéressé', 'Client', 'Perdu')),
@@ -77,15 +82,15 @@ create table if not exists public.prospects (
   created_at timestamptz not null default now()
 );
 
-create table if not exists public.assistant_conversations (
+create table if not exists public.bsv_assistant_conversations (
   id uuid primary key default gen_random_uuid(),
-  member_id uuid not null references public.profiles (id) on delete cascade,
+  member_id uuid not null references public.bsv_profiles (id) on delete cascade,
   role text not null check (role in ('user', 'assistant')),
   content text not null,
   created_at timestamptz not null default now()
 );
 
-create table if not exists public.community_posts (
+create table if not exists public.bsv_community_posts (
   id uuid primary key default gen_random_uuid(),
   type text not null check (type in ('actualité', 'événement', 'formation', 'témoignage', 'challenge')),
   title text not null,
@@ -93,21 +98,25 @@ create table if not exists public.community_posts (
   created_at timestamptz not null default now()
 );
 
--- Auto-crée un profil "member" à chaque inscription Supabase Auth.
-create or replace function public.handle_new_user()
+-- Auto-crée une ligne dans bsv_profiles à chaque inscription Supabase Auth.
+-- Le nom de la fonction et du trigger sont préfixés "bsv_" : ils ne peuvent
+-- donc pas remplacer un trigger/une fonction déjà utilisés par un autre outil
+-- sur ce même projet (contrairement à un nom générique comme
+-- "on_auth_user_created", qui aurait pu écraser un trigger existant).
+create or replace function public.bsv_handle_new_user()
 returns trigger
 language plpgsql
 security definer set search_path = public
 as $$
 begin
-  insert into public.profiles (id, full_name, phone)
+  insert into public.bsv_profiles (id, full_name, phone)
   values (new.id, new.raw_user_meta_data ->> 'full_name', new.raw_user_meta_data ->> 'phone')
   on conflict (id) do nothing;
   return new;
 end;
 $$;
 
-drop trigger if exists on_auth_user_created on auth.users;
-create trigger on_auth_user_created
+drop trigger if exists bsv_on_auth_user_created on auth.users;
+create trigger bsv_on_auth_user_created
   after insert on auth.users
-  for each row execute procedure public.handle_new_user();
+  for each row execute procedure public.bsv_handle_new_user();

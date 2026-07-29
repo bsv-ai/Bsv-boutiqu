@@ -15,7 +15,7 @@ export default function ParcoursClient({ memberId, initialProgress }) {
   async function toggleStep(id) {
     const nextCompleted = !progress[id];
     setProgress((prev) => ({ ...prev, [id]: nextCompleted }));
-    await supabase.from("member_progress").upsert(
+    await supabase.from("bsv_member_progress").upsert(
       { member_id: memberId, step_id: id, completed: nextCompleted, completed_at: nextCompleted ? new Date().toISOString() : null },
       { onConflict: "member_id,step_id" }
     );

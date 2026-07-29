@@ -2,7 +2,7 @@
 -- À exécuter après 0001_schema.sql et 0002_rls.sql, avec la clé "service_role"
 -- (SQL editor Supabase l'utilise déjà par défaut, donc les policies n'empêchent pas ce script).
 
-insert into public.products (active, price, image_url, name_fr, desc_fr, long_fr, name_en, desc_en, long_en) values
+insert into public.bsv_products (active, price, image_url, name_fr, desc_fr, long_fr, name_en, desc_en, long_en) values
 (true, 15000, 'https://images.unsplash.com/photo-1523293182086-7651a899d37f?q=80&w=800&auto=format&fit=crop',
  'Savon noir artisanal', 'Gommage naturel, peau douce et nette.',
  'Savon noir traditionnel préparé à base de beurre de karité et d''huiles naturelles. Idéal pour exfolier en douceur et unifier le teint.',
@@ -35,7 +35,7 @@ insert into public.products (active, price, image_url, name_fr, desc_fr, long_fr
  'Set of 3 handmade candles with soft, comforting scents.')
 on conflict do nothing;
 
-update public.site_settings set
+update public.bsv_site_settings set
   site_title = 'Bâtir Sa Valeur',
   whatsapp_number = '2250594013027',
   phone_number = '0594013027',
@@ -46,7 +46,7 @@ update public.site_settings set
   accent_color = '#C89B3C'
 where id = 1;
 
-insert into public.community_posts (type, title, content) values
+insert into public.bsv_community_posts (type, title, content) values
 ('actualité', 'Nouveau contenu de la semaine', 'Nouveau contenu de la semaine 5 disponible sur la chaîne WhatsApp.'),
 ('actualité', 'Soirée bilan', 'Rappel : soirée bilan de fin de mois vendredi.'),
 ('actualité', 'Nouveaux membres', '3 nouveaux membres ont rejoint ADN cette semaine.'),

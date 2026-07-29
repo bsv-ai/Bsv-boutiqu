@@ -19,13 +19,13 @@ export async function POST(request) {
   }
 
   const { data: history } = await supabase
-    .from("assistant_conversations")
+    .from("bsv_assistant_conversations")
     .select("role, content")
     .eq("member_id", user.id)
     .order("created_at", { ascending: true })
     .limit(30);
 
-  await supabase.from("assistant_conversations").insert({ member_id: user.id, role: "user", content });
+  await supabase.from("bsv_assistant_conversations").insert({ member_id: user.id, role: "user", content });
 
   const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
 
@@ -42,7 +42,7 @@ export async function POST(request) {
     reply = "Une erreur est survenue. Réessaie dans un instant.";
   }
 
-  await supabase.from("assistant_conversations").insert({ member_id: user.id, role: "assistant", content: reply });
+  await supabase.from("bsv_assistant_conversations").insert({ member_id: user.id, role: "assistant", content: reply });
 
   return NextResponse.json({ reply });
 }

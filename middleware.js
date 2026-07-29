@@ -39,7 +39,7 @@ export async function middleware(request) {
 
   if (needsAdmin && user) {
     const { data: profile } = await supabase
-      .from("profiles")
+      .from("bsv_profiles")
       .select("role")
       .eq("id", user.id)
       .single();

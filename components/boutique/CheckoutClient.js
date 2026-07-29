@@ -39,7 +39,7 @@ export default function CheckoutClient({ products }) {
     const orderNumber = genOrderNumber();
 
     const supabase = createClient();
-    const { error: insertError } = await supabase.from("orders").insert({
+    const { error: insertError } = await supabase.from("bsv_orders").insert({
       order_number: orderNumber,
       items,
       total: cartTotal,

@@ -15,22 +15,22 @@ export default function ProductsManager({ initialProducts }) {
 
   async function toggleActive(p) {
     setProducts(products.map((pr) => (pr.id === p.id ? { ...pr, active: !pr.active } : pr)));
-    await supabase.from("products").update({ active: !p.active }).eq("id", p.id);
+    await supabase.from("bsv_products").update({ active: !p.active }).eq("id", p.id);
   }
 
   async function remove(id) {
     if (!window.confirm("Supprimer ce produit ?")) return;
     setProducts(products.filter((pr) => pr.id !== id));
-    await supabase.from("products").delete().eq("id", id);
+    await supabase.from("bsv_products").delete().eq("id", id);
   }
 
   async function save(form) {
     if (editing === "new") {
-      const { data } = await supabase.from("products").insert(form).select().single();
+      const { data } = await supabase.from("bsv_products").insert(form).select().single();
       if (data) setProducts([data, ...products]);
     } else {
       const { id, ...rest } = form;
-      await supabase.from("products").update(rest).eq("id", id);
+      await supabase.from("bsv_products").update(rest).eq("id", id);
       setProducts(products.map((p) => (p.id === id ? { ...p, ...rest } : p)));
     }
     setEditing(null);

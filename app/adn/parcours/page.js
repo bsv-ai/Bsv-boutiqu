@@ -4,7 +4,7 @@ import ParcoursClient from "@/components/adn/ParcoursClient";
 export default async function ParcoursPage() {
   const supabase = createClient();
   const { user } = await getProfile(supabase);
-  const { data: rows } = await supabase.from("member_progress").select("*").eq("member_id", user.id);
+  const { data: rows } = await supabase.from("bsv_member_progress").select("*").eq("member_id", user.id);
 
   const initialProgress = {};
   (rows || []).forEach((r) => {

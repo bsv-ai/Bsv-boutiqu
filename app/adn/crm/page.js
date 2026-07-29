@@ -5,7 +5,7 @@ export default async function CRMPage() {
   const supabase = createClient();
   const { user } = await getProfile(supabase);
   const { data: prospects } = await supabase
-    .from("prospects")
+    .from("bsv_prospects")
     .select("*")
     .eq("member_id", user.id)
     .order("created_at", { ascending: false });

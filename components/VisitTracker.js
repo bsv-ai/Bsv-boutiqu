@@ -14,7 +14,7 @@ export default function VisitTracker() {
       /* ignore */
     }
     const supabase = createClient();
-    supabase.from("site_visits").insert({}).then(() => {});
+    supabase.from("bsv_site_visits").insert({}).then(() => {});
   }, []);
 
   return null;

@@ -3,9 +3,9 @@ import { createClient } from "@/lib/supabase/server";
 export default async function AdminMembresPage() {
   const supabase = createClient();
   const [{ data: members }, { data: progress }, { data: prospects }] = await Promise.all([
-    supabase.from("profiles").select("*").eq("role", "member").order("created_at", { ascending: false }),
-    supabase.from("member_progress").select("member_id").eq("completed", true),
-    supabase.from("prospects").select("member_id"),
+    supabase.from("bsv_profiles").select("*").eq("role", "member").order("created_at", { ascending: false }),
+    supabase.from("bsv_member_progress").select("member_id").eq("completed", true),
+    supabase.from("bsv_prospects").select("member_id"),
   ]);
 
   const progressCount = {};

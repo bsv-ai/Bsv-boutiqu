@@ -24,7 +24,7 @@ export default function Nav({ siteTitle = "Bâtir Sa Valeur", accent = ACCENT_DE
       if (!mounted) return;
       setUser(data.user || null);
       if (data.user) {
-        const { data: profile } = await supabase.from("profiles").select("role").eq("id", data.user.id).single();
+        const { data: profile } = await supabase.from("bsv_profiles").select("role").eq("id", data.user.id).single();
         if (mounted) setRole(profile?.role || "member");
       }
     });
